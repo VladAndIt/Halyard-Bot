@@ -4,29 +4,19 @@ import (
 	"fmt"
 	"log"
 
+	mainconfig "halyard.bot/config"
+	keyboards "halyard.bot/keyboards"
+
 	tgapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-var numericKeyboard = tgapi.NewInlineKeyboardMarkup(
-	tgapi.NewInlineKeyboardRow(
-		tgapi.NewInlineKeyboardButtonURL("1.com", "http://1.com"),
-		tgapi.NewInlineKeyboardButtonSwitch("2sw", "open 2"),
-		tgapi.NewInlineKeyboardButtonData("3", "3"),
-	),
-	tgapi.NewInlineKeyboardRow(
-		tgapi.NewInlineKeyboardButtonData("4", "4"),
-		tgapi.NewInlineKeyboardButtonData("5", "5"),
-		tgapi.NewInlineKeyboardButtonData("6", "6"),
-	),
-)
-
 func main() {
-	bot, err := tgapi.NewBotAPI("6728338149:AAFvWf0zpe_D2aRs2robHzBLMYsNm8YdO3k")
-	if err != nil {
-		log.Panic(err)
-	}
+	var conf = mainconfig.NewConfig()
 
-	// bot.Debug = true
+	bot, err := tgapi.NewBotAPI(conf.Telegram.Tocken)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	log.Printf("Authorized on account %s \n", bot.Self.UserName)
 
@@ -40,6 +30,8 @@ func main() {
 		if update.CallbackQuery != nil {
 			fmt.Println(update)
 
+			tgapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data)
+
 			bot.Send(tgapi.NewMessage(update.CallbackQuery.Message.Chat.ID, update.CallbackQuery.Data))
 		}
 		if update.Message != nil {
@@ -49,15 +41,14 @@ func main() {
 			switch update.Message.Text {
 			case "/start":
 				{
-					msg.ReplyMarkup = numericKeyboard
+					msg.ReplyMarkup = keyboards.MainKeyboard
 				}
 			case "/open":
 				{
-					msg.ReplyMarkup = numericKeyboard
+					msg.ReplyMarkup = keyboards.InlineKeboard
 				}
+				bot.Send(msg)
 			}
-
-			bot.Send(msg)
 		}
 	}
 }
