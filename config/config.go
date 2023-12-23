@@ -8,15 +8,17 @@ import (
 )
 
 type Config struct {
-	Telegram struct {
-		Tocken string `yaml:"tocken"`
-	} `yaml:"telegram"`
+	Telegram `yaml:"telegram"`
+}
+
+type Telegram struct {
+	Tocken string `yaml:"tocken"`
 }
 
 // NewConfig returns a new decoded Config struct
-func NewConfig() *Config {
+func MustLoad() *Config {
 	// Create config structure
-	config := &Config{}
+	cfg := &Config{}
 
 	// Open config file
 	file, err := os.Open("config/config.yaml")
@@ -29,9 +31,9 @@ func NewConfig() *Config {
 	d := yaml.NewDecoder(file)
 
 	// Start YAML decoding from file
-	if err := d.Decode(&config); err != nil {
+	if err := d.Decode(&cfg); err != nil {
 		log.Fatal(err)
 	}
 
-	return config
+	return cfg
 }

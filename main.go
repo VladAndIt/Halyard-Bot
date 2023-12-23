@@ -11,9 +11,9 @@ import (
 )
 
 func main() {
-	var conf = mainconfig.NewConfig()
+	var cfg = mainconfig.MustLoad()
 
-	bot, err := tgapi.NewBotAPI(conf.Telegram.Tocken)
+	bot, err := tgapi.NewBotAPI(cfg.Telegram.Tocken)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,7 +37,7 @@ func main() {
 		if update.Message != nil {
 
 			msg := tgapi.NewMessage(update.Message.Chat.ID, update.Message.Text)
-			fmt.Println(msg)
+			log.Println(msg)
 			switch update.Message.Text {
 			case "/start":
 				{
