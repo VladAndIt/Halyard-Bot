@@ -11,7 +11,8 @@ import (
 )
 
 func main() {
-	var cfg = mainconfig.MustLoad()
+	var cfg mainconfig.Config
+	mainconfig.MustLoad(&cfg)
 
 	bot, err := tgapi.NewBotAPI(cfg.Telegram.Tocken)
 	if err != nil {

@@ -14,10 +14,6 @@ This is full project structure example of Telegram bot with config.yaml
 - [Vlad Izotov](https://github.com/trrunovvagmailcom)
 - [Vlad Izotov TG](https://t.me/vlad4836)
 
-## Code reviewer
-
--
-
 ## Article assistance
 
 If you want to say «thank you»:

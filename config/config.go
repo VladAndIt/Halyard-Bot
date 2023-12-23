@@ -4,22 +4,25 @@ import (
 	"log"
 	"os"
 
+	"github.com/kelseyhightower/envconfig"
 	"gopkg.in/yaml.v2"
 )
 
 type Config struct {
+	App      `yaml:"app"`
 	Telegram `yaml:"telegram"`
 }
 
+type App struct {
+	Profile string `yaml:"profile"`
+}
+
 type Telegram struct {
-	Tocken string `yaml:"tocken"`
+	Tocken string `yaml:"tocken" envconfig:"TELEGRAM_HALYARD_TOCKEN"`
 }
 
 // NewConfig returns a new decoded Config struct
-func MustLoad() *Config {
-	// Create config structure
-	cfg := &Config{}
-
+func MustLoad(cfg *Config) {
 	// Open config file
 	file, err := os.Open("config/config.yaml")
 	if err != nil {
@@ -34,6 +37,16 @@ func MustLoad() *Config {
 	if err := d.Decode(&cfg); err != nil {
 		log.Fatal(err)
 	}
+	// env
+	path, exists := os.LookupEnv("TELEGRAM_HALYARD_TOCKEN")
 
-	return cfg
+	if exists {
+		// Print the value of the environment variable
+		log.Print(path)
+	}
+	log.Print(path)
+	error := envconfig.Process("", cfg)
+	if error != nil {
+		log.Fatal("Can't read env")
+	}
 }

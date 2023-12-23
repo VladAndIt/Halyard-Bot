@@ -18,5 +18,4 @@ func setupLogger(profile string) *slog.Logger {
 	}
 
 	return log
-
 }
