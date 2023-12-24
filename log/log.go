@@ -1,11 +1,14 @@
 package log
 
 import (
+	"context"
 	"log/slog"
 	"os"
 )
 
-func setupLogger(profile string) *slog.Logger {
+type ctxLogger struct{}
+
+func ContextWithLogger(ctx context.Context) context.Context {
 	var log *slog.Logger
 
 	switch profile {
@@ -17,5 +20,12 @@ func setupLogger(profile string) *slog.Logger {
 		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
 	}
 
-	return log
+	return context.WithValue(ctx, ctxLogger{}, log)
+}
+
+func LoggerFromContext(ctx context.Context) *slog.Logger {
+	if logger, ok := ctx.Value(ctxLogger{}).(*slog.Logger); ok {
+		return logger
+	}
+	return nil
 }

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -14,6 +15,7 @@ type Config struct {
 }
 
 type App struct {
+	Name    string `yaml:"name"`
 	Profile string `yaml:"profile"`
 }
 
@@ -22,7 +24,8 @@ type Telegram struct {
 }
 
 // NewConfig returns a new decoded Config struct
-func MustLoad(cfg *Config) {
+func ContextWithConfig(ctx context.Context) context.Context {
+
 	// Open config file
 	file, err := os.Open("config/config.yaml")
 	if err != nil {
@@ -33,6 +36,7 @@ func MustLoad(cfg *Config) {
 	// Init new YAML decode
 	d := yaml.NewDecoder(file)
 
+	var cfg Config
 	// Start YAML decoding from file
 	if err := d.Decode(&cfg); err != nil {
 		log.Fatal(err)
@@ -42,4 +46,13 @@ func MustLoad(cfg *Config) {
 	if error != nil {
 		log.Fatal("Can't read env")
 	}
+
+	return context.WithValue(ctx, Config{}, cfg)
+}
+
+func ConfigFromContext(ctx context.Context) *Config {
+	if config, ok := ctx.Value(Config{}).(*Config); ok {
+		return config
+	}
+	return nil
 }
