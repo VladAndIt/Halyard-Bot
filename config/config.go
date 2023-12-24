@@ -38,13 +38,6 @@ func MustLoad(cfg *Config) {
 		log.Fatal(err)
 	}
 	// env
-	path, exists := os.LookupEnv("TELEGRAM_HALYARD_TOCKEN")
-
-	if exists {
-		// Print the value of the environment variable
-		log.Print(path)
-	}
-	log.Print(path)
 	error := envconfig.Process("", cfg)
 	if error != nil {
 		log.Fatal("Can't read env")
