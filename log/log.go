@@ -4,14 +4,18 @@ import (
 	"context"
 	"log/slog"
 	"os"
+
+	"halyard.bot/config"
 )
 
 type ctxLogger struct{}
 
 func ContextWithLogger(ctx context.Context) context.Context {
+
+	var config = config.ConfigFromContext(ctx)
 	var log *slog.Logger
 
-	switch profile {
+	switch config.App.Name {
 	case "local":
 		log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
 	case "dev":
